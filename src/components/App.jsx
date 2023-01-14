@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react';
+import { useState} from 'react';
 import { Notify } from 'notiflix/build/notiflix-notify-aio';
 import { nanoid } from 'nanoid';
 import { Section, Title } from './App.styled';
@@ -6,16 +6,11 @@ import { Section, Title } from './App.styled';
 import Form from './Form';
 import ContactsList from './ContactsList';
 import Filter from './Filter';
-
+import { useLocalStorage } from 'hooks/useLocalStoage';
 
 export function App() {
-  const [contacts, setContacts] = useState(() => {
-    return JSON.parse(window.localStorage.getItem('contacts')) ?? [];
-  });
+  const [contacts, setContacts] = useLocalStorage('contacts',[])
   const [filter, setFilter] = useState('');
-  useEffect(() => {
-    window.localStorage.setItem('contacts', JSON.stringify(contacts));
-  }, [contacts]);
 
   const addNewContact = data => {
     const newContact = {
