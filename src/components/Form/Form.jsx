@@ -5,20 +5,27 @@ import { Label, Input, Button, FormContainer } from './Form.styled';
 export default Form;
 
 function Form({ addNewContact }) {
-  const [state, setState] = useState({
-    name: '',
-    number: '',
-  });
-
+  const [name, setName] = useState('');
+  const [number, setNumber] = useState('');
   const handleChange = e => {
     const { name, value } = e.target;
-    setState(prev => ({ ...prev, [name]: value }));
+    switch (name) {
+      case 'name':
+        setName(value);
+        break;
+      case 'number':
+        setNumber(value);
+        break;
+      default:
+        return;
+    }
   };
 
   const handleSubmit = e => {
     e.preventDefault();
-    addNewContact({ ...state });
-    setState({ name: '', number: '' });
+    addNewContact({ name, number });
+    setName('');
+    setNumber('');
   };
   return (
     <FormContainer onSubmit={handleSubmit} autoComplete="off">
@@ -29,7 +36,7 @@ function Form({ addNewContact }) {
             onChange={handleChange}
             type="text"
             name="name"
-            value={state.name}
+            value={name}
             placeholder="Enter name"
             pattern="^[a-zA-Zа-яА-Я]+(([' -][a-zA-Zа-яА-Я ])?[a-zA-Zа-яА-Я]*)*$"
             title="Name may contain only letters, apostrophe, dash and spaces. For example Adrian, Jacob Mercer, Charles de Batz de Castelmore d'Artagnan"
@@ -42,7 +49,7 @@ function Form({ addNewContact }) {
             onChange={handleChange}
             type="tel"
             name="number"
-            value={state.number}
+            value={number}
             placeholder="Enter number 000-00-00"
             pattern="\+?\d{1,4}?[-.\s]?\(?\d{1,3}?\)?[-.\s]?\d{1,4}[-.\s]?\d{1,4}[-.\s]?\d{1,9}"
             title="Phone number must be digits and can contain spaces, dashes, parentheses and can start with +"
@@ -50,14 +57,11 @@ function Form({ addNewContact }) {
           />
         </Label>
       </div>
-      <Button disabled={!state.name || !state.number}>Add new contact</Button>
+      <Button disabled={!name || !number}>Add new contact</Button>
     </FormContainer>
   );
 }
 
 Form.propTypes = {
-  addNewContact: PropTypes.exact({
-    id: PropTypes.string.isRequired,
-    data: PropTypes.objectOf(PropTypes.string).isRequired,
-  }),
+  addNewContact: PropTypes.func.isRequired,
 };
